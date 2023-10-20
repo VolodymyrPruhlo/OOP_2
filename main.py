@@ -61,15 +61,8 @@ class Birthday(Field):
 
     @birthday.setter
     def birthday(self, value):
-        pattern = r"\d{4},\d{2},\d{2}"
-        if re.match(pattern, value):
-            parts = value.split(',')
-            month = int(parts[1])
-            day = int(parts[2])
-            if month <= 12 and day <= 31:
+        if isinstance(value, datetime):
                 self._birthday = value
-            else:
-                raise ValueError('Month or day invalid format')
         else:
             raise ValueError("Incorrect date")
 
@@ -82,11 +75,8 @@ class Record:
 
     def day_of_birthday(self):
         if self.birthday:
-            x = self.birthday.birthday.split(',')
-            year = int(x[0])
-            month = int(x[1])
-            day = int(x[2])
-            birthday_date = datetime(year, month, day)
+
+            birthday_date = self.birthday.birthday
             current_day = datetime.now()
             days_to_bd = birthday_date - current_day
             return days_to_bd.days

@@ -48,13 +48,12 @@ class Phone(Field):
             raise ValueError('Number not correct')
 
 
-class Birthday(str):
-    def __init__(self, birthday):
-        self._birthday = birthday
-
-    def split(self, separator=None, maxsplit=-1):
-        parts = super().split(separator, maxsplit)
-        return parts
+class Birthday(Field):
+    def __init__(self, value):
+        self._birthday = None
+        if value:
+            self.birthday = value
+        super().__init__(value)
 
     @property
     def birthday(self):
@@ -69,9 +68,10 @@ class Birthday(str):
             day = int(parts[2])
             if month <= 12 and day <= 31:
                 self._birthday = value
-            raise ValueError
+            else:
+                raise ValueError('Month or day invalid format')
         else:
-            raise ValueError
+            raise ValueError("Incorrect date")
 
 
 class Record:
@@ -81,14 +81,15 @@ class Record:
         self.birthday = Birthday(birthday)
 
     def day_of_birthday(self):
-        x = self.birthday.split(',')
-        year = int(x[0])
-        month = int(x[1])
-        day = int(x[2])
-        birthday_date = datetime(year, month, day)
-        current_day = datetime.now()
-        days_to_bd = birthday_date - current_day
-        return days_to_bd.days
+        if self.birthday:
+            x = self.birthday.birthday.split(',')
+            year = int(x[0])
+            month = int(x[1])
+            day = int(x[2])
+            birthday_date = datetime(year, month, day)
+            current_day = datetime.now()
+            days_to_bd = birthday_date - current_day
+            return days_to_bd.days
 
     def add_phone(self, phone: str):
         phone = Phone(phone)
